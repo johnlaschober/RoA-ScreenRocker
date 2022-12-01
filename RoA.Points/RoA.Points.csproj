@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F7AA9F49-48CF-4821-8FB3-DBEB9C8A3AD0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RoA.Points</RootNamespace>
+    <AssemblyName>RoA.Points</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="PointCollection.cs" />
+    <Compile Include="PointCollectionsGroup.cs" />
+    <Compile Include="PointCollections\PC_ChangeRules.cs" />
+    <Compile Include="PointCollections\PC_CSSCharacterNames.cs" />
+    <Compile Include="PointCollections\PC_EliminatedZero.cs" />
+    <Compile Include="PointCollections\PC_FallbackTokens.cs" />
+    <Compile Include="PointCollections\PC_GAME.cs" />
+    <Compile Include="PointCollections\PC_GameAndSet.cs" />
+    <Compile Include="PointCollections\PC_LocalMenu.cs" />
+    <Compile Include="PointCollections\PC_MatchDamage.cs" />
+    <Compile Include="PointCollections\PC_MatchTimerDoubleDigits.cs" />
+    <Compile Include="PointCollections\PC_MatchTimerSingleDigits.cs" />
+    <Compile Include="PointCollections\PC_Overtime.cs" />
+    <Compile Include="PointCollections\PC_PercentPercentageSign.cs" />
+    <Compile Include="PointCollections\PC_ReadyToFightBar.cs" />
+    <Compile Include="PointCollections\PC_StageSelectMusicButton.cs" />
+    <Compile Include="PointCollections\PC_StocksIcon.cs" />
+    <Compile Include="PointCollections\PC_TIME.cs" />
+    <Compile Include="PointCollections\PC_TourneyModeIcon.cs" />
+    <Compile Include="PointCollections\SettingsNumbers\PC_Settings0.cs" />
+    <Compile Include="PointCollections\SettingsNumbers\PC_Settings1.cs" />
+    <Compile Include="PointCollections\SettingsNumbers\PC_Settings2.cs" />
+    <Compile Include="PointCollections\SettingsNumbers\PC_Settings3.cs" />
+    <Compile Include="PointCollections\SettingsNumbers\PC_Settings4.cs" />
+    <Compile Include="PointCollections\SettingsNumbers\PC_Settings5.cs" />
+    <Compile Include="PointCollections\SettingsNumbers\PC_Settings6.cs" />
+    <Compile Include="PointCollections\SettingsNumbers\PC_Settings7.cs" />
+    <Compile Include="PointCollections\SettingsNumbers\PC_Settings8.cs" />
+    <Compile Include="PointCollections\SettingsNumbers\PC_Settings9.cs" />
+    <Compile Include="PointCollections\SettingsNumbers\PC_SettingsDash.cs" />
+    <Compile Include="PointCollections\PC_Slot.cs" />
+    <Compile Include="PointCollections\PC_PlayerMatchHud.cs" />
+    <Compile Include="PointCollections\PC_PauseMenu.cs" />
+    <Compile Include="PointCollections\PC_PurpleBanner.cs" />
+    <Compile Include="PointCollections\SlotCharacters\PC_SlotRandom.cs" />
+    <Compile Include="PointCollections\SlotCharacters\PC_SlotAbsa.cs" />
+    <Compile Include="PointCollections\SlotCharacters\PC_SlotClairen.cs" />
+    <Compile Include="PointCollections\SlotCharacters\PC_SlotElliana.cs" />
+    <Compile Include="PointCollections\SlotCharacters\PC_SlotEtalus.cs" />
+    <Compile Include="PointCollections\SlotCharacters\PC_SlotForsburn.cs" />
+    <Compile Include="PointCollections\SlotCharacters\PC_SlotHodan.cs" />
+    <Compile Include="PointCollections\SlotCharacters\PC_SlotKragg.cs" />
+    <Compile Include="PointCollections\SlotCharacters\PC_SlotMaypul.cs" />
+    <Compile Include="PointCollections\SlotCharacters\PC_SlotMollo.cs" />
+    <Compile Include="PointCollections\SlotCharacters\PC_SlotOlympia.cs" />
+    <Compile Include="PointCollections\SlotCharacters\PC_SlotOrcane.cs" />
+    <Compile Include="PointCollections\SlotCharacters\PC_SlotOri.cs" />
+    <Compile Include="PointCollections\SlotCharacters\PC_SlotPomme.cs" />
+    <Compile Include="PointCollections\SlotCharacters\PC_SlotRanno.cs" />
+    <Compile Include="PointCollections\SlotCharacters\PC_SlotShovelKnight.cs" />
+    <Compile Include="PointCollections\SlotCharacters\PC_SlotSylvanos.cs" />
+    <Compile Include="PointCollections\SlotCharacters\PC_SlotWrastor.cs" />
+    <Compile Include="PointCollections\SlotCharacters\PC_SlotZetterburn.cs" />
+    <Compile Include="PointCollections\PC_StageSelectBigPreview.cs" />
+    <Compile Include="PointCollections\PC_StageSelectHamburger.cs" />
+    <Compile Include="PointCollections\PC_Template.cs" />
+    <Compile Include="PointCollections\PC_TourneyModeText.cs" />
+    <Compile Include="PointCollections\PC_VersusModeSettings.cs" />
+    <Compile Include="PointCollections\PC_VersusModeText.cs" />
+    <Compile Include="PointHelper.cs" />
+    <Compile Include="PointObjects\PO_CSSSlot.cs" />
+    <Compile Include="PointObjects\PO_MatchPlayerHud.cs" />
+    <Compile Include="PointObjects\PO_SettingsNumber.cs" />
+    <Compile Include="PointScreens\IPS.cs" />
+    <Compile Include="PointScreens\PS_LocalMenu.cs" />
+    <Compile Include="PointScreens\PS_LocalVersusCSS.cs" />
+    <Compile Include="PointScreens\PS_LocalVersusMatch.cs" />
+    <Compile Include="PointScreens\PS_LocalVersusSettings.cs" />
+    <Compile Include="PointScreens\PS_Pause.cs" />
+    <Compile Include="PointScreens\PS_StageSelect.cs" />
+    <Compile Include="PointScreens\PS_Template.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScreenTools.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
