@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NativeMethods.cs" />
     <Compile Include="PointCollection.cs" />
     <Compile Include="PointCollectionsGroup.cs" />
     <Compile Include="PointCollections\PC_ChangeRules.cs" />

@@ -5,7 +5,9 @@ using RoA.Screen.State.External;
 using RoA.Screen.State.Internal;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -17,22 +19,69 @@ namespace RoA.ScreenUI
     {
         ConfigurationFile configFile;
         private string _rockerConfigPath;
+        private bool _watching = false;
 
         public frmScreenUI()
         {
             InitializeComponent();
         }
 
+        private Process gameProcess = null;
+
+        public Process FindProcess()
+        {
+            Process[] processes = Process.GetProcessesByName("RivalsofAether");
+
+            foreach (var process in processes)
+            {
+                if (process.MainWindowHandle == IntPtr.Zero)
+                {
+                    continue;
+                }
+
+                return process;
+            }
+
+            return null;
+        }
+
         private void bgwSync_DoWork(object sender, DoWorkEventArgs e)
         {
             ScreenSyncer syncer = new ScreenSyncer();
 
+            gameProcess = FindProcess();
+
+            if (gameProcess == null)
+            {
+                MessageBox.Show("No RivalsofAether.exe executable is currently running.");
+                SetNotWatching();
+            }
+
             while (true)
             {
+                if (!_watching)
+                {
+                    return;
+                }
+
                 try
                 {
-                    //Bitmap screen = ScreenTools.CaptureFromScreen(new Rectangle(0, 0, 2560, 1440), new Size(1920, 1080));
-                    Bitmap screen = ScreenTools.CaptureFromScreen(new Rectangle(0, 0, 1920, 1080), null);
+                    Bitmap screen;
+
+                    if (rbtnWindowed.Checked)
+                    {
+                        ScreenTools.BringProcessWindowToFront(gameProcess);
+
+                        screen = ScreenTools.CaptureFromWindow(gameProcess);
+                        screen = ScreenTools.ResizeImage(screen, 1920, 1080);
+                        //screen.Save("C:\\Users\\robob\\Documents\\ShareX\\testWindowedFight2.bmp", ImageFormat.Bmp);
+                    }
+                    else
+                    {
+                        //Bitmap screen = ScreenTools.CaptureFromScreen(new Rectangle(0, 0, 2560, 1440), new Size(1920, 1080));
+                        screen = ScreenTools.CaptureFromScreen(new Rectangle(0, 0, 1920, 1080), null);
+                        //screen.Save("C:\\Users\\robob\\Documents\\ShareX\\testDesktopFight.bmp", ImageFormat.Bmp);
+                    }
                     var stateResultsTuple = syncer.Sync(screen);
 
                     bool changesOccurred = stateResultsTuple.Item1;
@@ -56,6 +105,10 @@ namespace RoA.ScreenUI
             if (e.ProgressPercentage == 0)
             {
                 UpdateFormLabels((ScreenState)e.UserState);
+            }
+            else if (e.ProgressPercentage == 1)
+            {
+                this.Close();
             }
         }
 
@@ -123,8 +176,6 @@ namespace RoA.ScreenUI
                     MessageBox.Show("Error reading in RocketConfig.json file: " + ex.Message.ToString(), "Error");
                 }
             }
-
-            bgwSync.RunWorkerAsync();
         }
 
         private void btnSaveDirectory_Click(object sender, EventArgs e)
@@ -162,6 +213,31 @@ namespace RoA.ScreenUI
                 }
             }
             catch (Exception) { } // Silently error, don't want to muck up game.
+        }
+
+        private void btnSync_Click(object sender, EventArgs e)
+        {
+            if (!_watching)
+            {
+                SetWatching();
+            }
+            else
+            {
+                SetNotWatching();
+            }
+        }
+
+        private void SetWatching()
+        {
+            _watching = true;
+            btnSync.Text = "Stop Watching";
+            bgwSync.RunWorkerAsync();
+        }
+
+        private void SetNotWatching()
+        {
+            btnSync.Text = "Watch Screen";
+            _watching = false;
         }
     }
 }

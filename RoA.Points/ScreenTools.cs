@@ -1,16 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace RoA.Points
 {
     public static class ScreenTools
     {
+        public static void BringProcessWindowToFront(Process process)
+        {
+            IntPtr handle = process.MainWindowHandle;
+            int i = 0;
+
+            while (!NativeMethods.IsWindowInForeground(handle))
+            {
+                if (i == 0)
+                {
+                    // Initial sleep if target window is not in foreground - just to let things settle
+                    Thread.Sleep(250);
+                }
+
+                if (NativeMethods.IsIconic(handle))
+                {
+                    // Minimized so send restore
+                    NativeMethods.ShowWindow(handle, NativeMethods.WindowShowStyle.Restore);
+                }
+                else
+                {
+                    // Already Maximized or Restored so just bring to front
+                    NativeMethods.SetForegroundWindow(handle);
+                }
+
+                Thread.Sleep(250);
+
+                // Check if the target process main window is now in the foreground
+                if (NativeMethods.IsWindowInForeground(handle))
+                {
+                    // Leave enough time for screen to redraw
+                    Thread.Sleep(1000);
+                    return;
+                }
+
+                // Prevent an infinite loop
+                if (i > 120) // about 30secs
+                {
+                    throw new Exception("Could not set process window to the foreground");
+                }
+
+                i++;
+            }
+        }
+
         public static Bitmap CaptureFromScreen(Rectangle rect, Size? resize)
         {
             Bitmap bmpScreenCapture = null;
@@ -41,6 +84,20 @@ namespace RoA.Points
             }
 
             return bmpScreenCapture;
+        }
+
+        public static Bitmap CaptureFromWindow(Process process)
+        {
+            IntPtr ptr = process.MainWindowHandle;
+
+            NativeMethods.Rect outRect = new NativeMethods.Rect();
+            NativeMethods.GetWindowRect(ptr, ref outRect);
+
+            Size size = new Size(outRect.Right - outRect.Left, outRect.Bottom - outRect.Top);
+
+            NativeMethods.MoveWindow(ptr, 10, 10, size.Width, size.Height, true);
+
+            return CaptureFromScreen(new Rectangle(18, 41, 960, 540), null);
         }
 
         public static Bitmap ResizeImage(Image image, int width, int height)
