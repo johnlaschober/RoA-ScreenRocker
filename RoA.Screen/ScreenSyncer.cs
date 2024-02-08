@@ -8,6 +8,13 @@ using RoA.Points.PointScreens;
 using RoA.Points.PointObjects;
 using Newtonsoft.Json;
 using RoA.Screen.State.Internal;
+using System.Diagnostics;
+using Capture.Hook;
+using Capture.Interface;
+using Capture;
+using System.Threading;
+using System.Windows.Forms;
+using EasyHook;
 
 namespace RoA.Screen
 {
@@ -18,6 +25,7 @@ namespace RoA.Screen
         public ScreenState prevState;
         public GameState gameState = null;
         public SetState setState = null;
+        public CaptureProcess WindowCaptureProcess = null;
 
         public ScreenSyncer()
         {
@@ -29,6 +37,95 @@ namespace RoA.Screen
         PlayerState p3MatchState;
         PlayerState p4MatchState;
         int stockSetting = 99;
+
+        Process _process = null;
+
+        public void AttachProcess()
+        {
+            Process[] processes = Process.GetProcessesByName("RivalsofAether");
+
+            foreach (var process in processes)
+            {
+                if (process.MainWindowHandle == IntPtr.Zero || HookManager.IsHooked(process.Id))
+                {
+                    continue;
+                }
+
+                Direct3DVersion direct3DVersion = Direct3DVersion.AutoDetect;
+
+                var captureConfig = new CaptureConfig()
+                {
+                    Direct3DVersion = direct3DVersion
+                };
+
+                _process = process;
+
+                var captureInterface = new CaptureInterface();
+                captureInterface.RemoteMessage += new MessageReceivedEvent(CaptureInterface_RemoteMessage);
+                WindowCaptureProcess = new CaptureProcess(process, captureConfig, captureInterface);
+
+                break;
+            }
+
+            Thread.Sleep(10);
+
+            if (WindowCaptureProcess == null)
+            {
+                MessageBox.Show("No 'RivalsofAether.exe' executable found running.");
+            }
+        }
+
+        void CaptureInterface_RemoteMessage(MessageReceivedEventArgs message)
+        {
+            Console.WriteLine(message.Message);
+        }
+
+        public void BringProcessWindowToFront()
+        {
+            if (_process == null)
+            {
+                return;
+            }
+
+            IntPtr handle = _process.MainWindowHandle;
+            int i = 0;
+
+            while (!NativeMethods.IsWindowInForeground(handle))
+            {
+                if (i == 0)
+                {
+                    // Initial sleep if target window is not in foreground - just to let things settle
+                    Thread.Sleep(250);
+                }
+
+                if (NativeMethods.IsIconic(handle))
+                {
+                    // Minimized so send restore
+                    NativeMethods.ShowWindow(handle, NativeMethods.WindowShowStyle.Restore);
+                }
+                else
+                {
+                    // Already Maximized or Restored so just bring to front
+                    NativeMethods.SetForegroundWindow(handle);
+                }
+                Thread.Sleep(250);
+
+                // Check if the target process main window is now in the foreground
+                if (NativeMethods.IsWindowInForeground(handle))
+                {
+                    // Leave enough time for screen to redraw
+                    Thread.Sleep(1000);
+                    return;
+                }
+
+                // Prevent an infinite loop
+                if (i > 120) // about 30secs
+                {
+                    throw new Exception("Could not set process window to the foreground");
+                }
+                i++;
+            }
+        }
 
         public (bool, ScreenState) Sync(Bitmap screen)
         {

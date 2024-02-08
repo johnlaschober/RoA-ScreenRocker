@@ -79,6 +79,8 @@ namespace RoA.ScreenUI
             this.label15 = new System.Windows.Forms.Label();
             this.btnSaveDirectory = new System.Windows.Forms.Button();
             this.txtSaveLocation = new System.Windows.Forms.TextBox();
+            this.rbtnFullscreen = new System.Windows.Forms.RadioButton();
+            this.rbtnWindowed = new System.Windows.Forms.RadioButton();
             this.grpPlayer1.SuspendLayout();
             this.grpPlayer2.SuspendLayout();
             this.grpPlayer3.SuspendLayout();
@@ -454,7 +456,7 @@ namespace RoA.ScreenUI
             this.grpMatch.Controls.Add(this.label3);
             this.grpMatch.Location = new System.Drawing.Point(12, 107);
             this.grpMatch.Name = "grpMatch";
-            this.grpMatch.Size = new System.Drawing.Size(200, 100);
+            this.grpMatch.Size = new System.Drawing.Size(190, 100);
             this.grpMatch.TabIndex = 7;
             this.grpMatch.TabStop = false;
             this.grpMatch.Text = "Match";
@@ -568,11 +570,35 @@ namespace RoA.ScreenUI
             this.txtSaveLocation.TabIndex = 9;
             this.txtSaveLocation.TabStop = false;
             // 
+            // rbtnFullscreen
+            // 
+            this.rbtnFullscreen.AutoSize = true;
+            this.rbtnFullscreen.Checked = true;
+            this.rbtnFullscreen.Location = new System.Drawing.Point(228, 107);
+            this.rbtnFullscreen.Name = "rbtnFullscreen";
+            this.rbtnFullscreen.Size = new System.Drawing.Size(73, 17);
+            this.rbtnFullscreen.TabIndex = 12;
+            this.rbtnFullscreen.TabStop = true;
+            this.rbtnFullscreen.Text = "Fullscreen";
+            this.rbtnFullscreen.UseVisualStyleBackColor = true;
+            // 
+            // rbtnWindowed
+            // 
+            this.rbtnWindowed.AutoSize = true;
+            this.rbtnWindowed.Location = new System.Drawing.Point(307, 107);
+            this.rbtnWindowed.Name = "rbtnWindowed";
+            this.rbtnWindowed.Size = new System.Drawing.Size(76, 17);
+            this.rbtnWindowed.TabIndex = 13;
+            this.rbtnWindowed.Text = "Windowed";
+            this.rbtnWindowed.UseVisualStyleBackColor = true;
+            // 
             // frmScreenUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 241);
+            this.Controls.Add(this.rbtnWindowed);
+            this.Controls.Add(this.rbtnFullscreen);
             this.Controls.Add(this.label15);
             this.Controls.Add(this.btnSaveDirectory);
             this.Controls.Add(this.txtSaveLocation);
@@ -651,6 +677,8 @@ namespace RoA.ScreenUI
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Button btnSaveDirectory;
         private System.Windows.Forms.TextBox txtSaveLocation;
+        private System.Windows.Forms.RadioButton rbtnFullscreen;
+        private System.Windows.Forms.RadioButton rbtnWindowed;
     }
 }
 

@@ -1,9 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using Capture;
+using Capture.Interface;
+using Newtonsoft.Json;
 using RoA.Points;
 using RoA.Screen;
 using RoA.Screen.State.External;
 using RoA.Screen.State.Internal;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
@@ -18,36 +22,117 @@ namespace RoA.ScreenUI
         ConfigurationFile configFile;
         private string _rockerConfigPath;
 
+        private CaptureProcess _captureProcess = null;
+        private ScreenSyncer _syncer = null;
+
         public frmScreenUI()
         {
             InitializeComponent();
         }
 
-        private void bgwSync_DoWork(object sender, DoWorkEventArgs e)
+        void Callback(IAsyncResult result)
         {
-            ScreenSyncer syncer = new ScreenSyncer();
-
-            while (true)
+            using (Screenshot screenshot = _captureProcess.CaptureInterface.EndGetScreenshot(result))
             {
                 try
                 {
-                    //Bitmap screen = ScreenTools.CaptureFromScreen(new Rectangle(0, 0, 2560, 1440), new Size(1920, 1080));
-                    Bitmap screen = ScreenTools.CaptureFromScreen(new Rectangle(0, 0, 1920, 1080), null);
-                    var stateResultsTuple = syncer.Sync(screen);
-
-                    bool changesOccurred = stateResultsTuple.Item1;
-                    ScreenState currentState = stateResultsTuple.Item2;
-
-                    if (changesOccurred)
+                    if (screenshot != null && screenshot.Data != null)
                     {
-                        bgwSync.ReportProgress(0, currentState);
-                        WriteStateToFile(new ExternalScreenState(currentState));
+                        Bitmap screen = ScreenTools.ResizeImage(screenshot.ToBitmap(), 1920, 1080);
+
+                        var stateResultsTuple = _syncer.Sync(screen);
+
+                        bool changesOccurred = stateResultsTuple.Item1;
+                        ScreenState currentState = stateResultsTuple.Item2;
+
+                        if (changesOccurred)
+                        {
+                            offloadStateQueue.Enqueue(currentState);
+                        }
+
+                        screen.Dispose();
                     }
 
-                    screen.Dispose();
-                    Thread.Sleep(250);
+                    windowCaptureReady = true;
                 }
-                catch (Exception) { }
+                catch
+                {
+                }
+            }
+        }
+
+        private Queue<ScreenState> offloadStateQueue;
+        private bool windowCaptureReady = true;
+
+        private void bgwSync_DoWork(object sender, DoWorkEventArgs e)
+        {
+            _syncer = new ScreenSyncer();
+
+            while (true)
+            {
+                if (rbtnWindowed.Checked)
+                {
+                    if (_syncer.WindowCaptureProcess == null)
+                    {
+                        _syncer.AttachProcess();
+                    }
+
+                    offloadStateQueue = new Queue<ScreenState>();
+
+                    _captureProcess = _syncer.WindowCaptureProcess;
+
+                    while (true)
+                    {
+                        if (windowCaptureReady)
+                        {
+                            if (offloadStateQueue.Count > 0)
+                            {
+                                var state = offloadStateQueue.Dequeue();
+                                bgwSync.ReportProgress(0, state);
+                                WriteStateToFile(new ExternalScreenState(state));
+                            }
+
+                            windowCaptureReady = false;
+                            _syncer.BringProcessWindowToFront();
+                            _captureProcess.CaptureInterface.BeginGetScreenshot(new Rectangle(0, 0, 0, 0), new TimeSpan(0, 0, 2), Callback, null, ImageFormat.Bitmap);
+                        }
+
+                        if (rbtnFullscreen.Checked)
+                        {
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    while (true)
+                    {
+                        try
+                        {
+                            //Bitmap screen = ScreenTools.CaptureFromScreen(new Rectangle(0, 0, 2560, 1440), new Size(1920, 1080));
+                            Bitmap screen = ScreenTools.CaptureFromScreen(new Rectangle(0, 0, 1920, 1080), null);
+                            var stateResultsTuple = _syncer.Sync(screen);
+
+                            bool changesOccurred = stateResultsTuple.Item1;
+                            ScreenState currentState = stateResultsTuple.Item2;
+
+                            if (changesOccurred)
+                            {
+                                bgwSync.ReportProgress(0, currentState);
+                                WriteStateToFile(new ExternalScreenState(currentState));
+                            }
+
+                            screen.Dispose();
+                            Thread.Sleep(250);
+                        }
+                        catch (Exception) { }
+
+                        if (rbtnWindowed.Checked)
+                        {
+                            break;
+                        }
+                    }
+                }
             }
         }
 
@@ -106,7 +191,7 @@ namespace RoA.ScreenUI
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Could not create RocketConfig.json configuration file: " + ex.Message.ToString(), "Error");
+                    MessageBox.Show("Could not create RockerConfig.json configuration file: " + ex.Message.ToString(), "Error");
                 }
             }
             else
@@ -120,7 +205,7 @@ namespace RoA.ScreenUI
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error reading in RocketConfig.json file: " + ex.Message.ToString(), "Error");
+                    MessageBox.Show("Error reading in RockerConfig.json file: " + ex.Message.ToString(), "Error");
                 }
             }
 
