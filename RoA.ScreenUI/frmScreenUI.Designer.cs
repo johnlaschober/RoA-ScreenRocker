@@ -82,6 +82,7 @@ namespace RoA.ScreenUI
             this.rbtnFullscreen = new System.Windows.Forms.RadioButton();
             this.rbtnWindowed = new System.Windows.Forms.RadioButton();
             this.btnSync = new System.Windows.Forms.Button();
+            this.btnReposition = new System.Windows.Forms.Button();
             this.grpPlayer1.SuspendLayout();
             this.grpPlayer2.SuspendLayout();
             this.grpPlayer3.SuspendLayout();
@@ -592,10 +593,11 @@ namespace RoA.ScreenUI
             this.rbtnWindowed.TabIndex = 13;
             this.rbtnWindowed.Text = "Windowed";
             this.rbtnWindowed.UseVisualStyleBackColor = true;
+            this.rbtnWindowed.CheckedChanged += new System.EventHandler(this.rbtnWindowed_CheckedChanged);
             // 
             // btnSync
             // 
-            this.btnSync.Location = new System.Drawing.Point(715, 151);
+            this.btnSync.Location = new System.Drawing.Point(715, 152);
             this.btnSync.Name = "btnSync";
             this.btnSync.Size = new System.Drawing.Size(75, 56);
             this.btnSync.TabIndex = 14;
@@ -603,11 +605,23 @@ namespace RoA.ScreenUI
             this.btnSync.UseVisualStyleBackColor = true;
             this.btnSync.Click += new System.EventHandler(this.btnSync_Click);
             // 
+            // btnReposition
+            // 
+            this.btnReposition.Location = new System.Drawing.Point(715, 107);
+            this.btnReposition.Name = "btnReposition";
+            this.btnReposition.Size = new System.Drawing.Size(75, 39);
+            this.btnReposition.TabIndex = 15;
+            this.btnReposition.Text = "Reposition Window";
+            this.btnReposition.UseVisualStyleBackColor = true;
+            this.btnReposition.Visible = false;
+            this.btnReposition.Click += new System.EventHandler(this.btnReposition_Click);
+            // 
             // frmScreenUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 241);
+            this.ClientSize = new System.Drawing.Size(800, 220);
+            this.Controls.Add(this.btnReposition);
             this.Controls.Add(this.btnSync);
             this.Controls.Add(this.rbtnWindowed);
             this.Controls.Add(this.rbtnFullscreen);
@@ -692,6 +706,7 @@ namespace RoA.ScreenUI
         private System.Windows.Forms.RadioButton rbtnFullscreen;
         private System.Windows.Forms.RadioButton rbtnWindowed;
         private System.Windows.Forms.Button btnSync;
+        private System.Windows.Forms.Button btnReposition;
     }
 }
 

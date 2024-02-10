@@ -22,6 +22,7 @@ namespace RoA.Screen
         public ScreenSyncer()
         {
             screens = new Screens();
+            prevState = new ScreenState();
         }
 
         PlayerState p1MatchState;

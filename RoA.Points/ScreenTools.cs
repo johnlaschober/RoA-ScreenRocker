@@ -88,6 +88,11 @@ namespace RoA.Points
 
         public static Bitmap CaptureFromWindow(Process process)
         {
+            return CaptureFromScreen(new Rectangle(18, 41, 960, 540), null);
+        }
+
+        public static void MoveWindow(Process process)
+        {
             IntPtr ptr = process.MainWindowHandle;
 
             NativeMethods.Rect outRect = new NativeMethods.Rect();
@@ -96,8 +101,6 @@ namespace RoA.Points
             Size size = new Size(outRect.Right - outRect.Left, outRect.Bottom - outRect.Top);
 
             NativeMethods.MoveWindow(ptr, 10, 10, size.Width, size.Height, true);
-
-            return CaptureFromScreen(new Rectangle(18, 41, 960, 540), null);
         }
 
         public static Bitmap ResizeImage(Image image, int width, int height)

@@ -57,6 +57,12 @@ namespace RoA.ScreenUI
                 SetNotWatching();
             }
 
+            if (rbtnWindowed.Checked)
+            {
+                ScreenTools.BringProcessWindowToFront(gameProcess);
+                ScreenTools.MoveWindow(gameProcess);
+            }
+
             while (true)
             {
                 if (!_watching)
@@ -70,8 +76,6 @@ namespace RoA.ScreenUI
 
                     if (rbtnWindowed.Checked)
                     {
-                        ScreenTools.BringProcessWindowToFront(gameProcess);
-
                         screen = ScreenTools.CaptureFromWindow(gameProcess);
                         screen = ScreenTools.ResizeImage(screen, 1920, 1080);
                         //screen.Save("C:\\Users\\robob\\Documents\\ShareX\\testWindowedFight2.bmp", ImageFormat.Bmp);
@@ -238,6 +242,25 @@ namespace RoA.ScreenUI
         {
             btnSync.Text = "Watch Screen";
             _watching = false;
+        }
+
+        private void btnReposition_Click(object sender, EventArgs e)
+        {
+            if (gameProcess == null)
+            {
+                gameProcess = FindProcess();
+            }
+
+            if (gameProcess != null)
+            {
+                ScreenTools.BringProcessWindowToFront(gameProcess);
+                ScreenTools.MoveWindow(gameProcess);
+            }
+        }
+
+        private void rbtnWindowed_CheckedChanged(object sender, EventArgs e)
+        {
+            btnReposition.Visible = !rbtnFullscreen.Checked;
         }
     }
 }
